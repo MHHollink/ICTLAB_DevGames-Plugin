@@ -13,7 +13,5 @@ DevGames is an application that will gamify the development process for your pro
 # DevGames-Team
 
 - Jorik Schouten
-- Wouter Naloop
 - EvertJan Heilema
-- Jelle van den Toren
 - Marcel Hollink
