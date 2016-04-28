@@ -11,10 +11,13 @@
   </parent>
   <groupId>nl.devgames.jenkinsplugins</groupId>
   <artifactId>devgames-publisher</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <packaging>hpi</packaging>
+  <version>${buildNumber}</version>
 
   <properties>
+    <maven.build.timestamp.format>yyyy.MMM.dd.HH.mm.ss</maven.build.timestamp.format>
+    <buildNumber>${maven.build.timestamp}</buildNumber>
+
     <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
     <jenkins.version>1.625.3</jenkins.version>
     <!-- Java Level to use. Java 7 required when using core >= 1.612 -->
@@ -29,17 +32,8 @@
   </properties>
 
   <name>DevGames plugin</name>
-  <!--<description>The official DevGames Jenkins plugin</description>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/DevGames+Plugin</url>-->
-
-  <!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
-
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>http://opensource.org/licenses/MIT</url>
-    </license>
-  </licenses>
+  <description>The official DevGames Jenkins plugin</description>
+  <!--<url>https://wiki.jenkins-ci.org/display/JENKINS/DevGames+Plugin</url>-->
 
   <dependencies>
     <dependency>
@@ -54,22 +48,6 @@
     </dependency>
   </dependencies>
 
-  <!-- If you want this to appear on the wiki page:
-  <developers>
-    <developer>
-      <id>bhacker</id>
-      <name>Bob Q. Hacker</name>
-      <email>bhacker@nowhere.net</email>
-    </developer>
-  </developers>
-  -->
-  <!-- Assuming you want to host on @jenkinsci:
-  <scm>
-    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-    <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-  </scm>
-   -->
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
@@ -82,6 +60,7 @@
       <url>http://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
+
   <!-- If you want to depend on other plugins:
   <dependencies>
     <dependency>

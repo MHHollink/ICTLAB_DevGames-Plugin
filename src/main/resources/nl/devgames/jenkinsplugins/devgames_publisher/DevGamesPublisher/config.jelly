@@ -5,12 +5,13 @@
 
     See global.jelly for a general discussion about jelly script.
   -->
-
-  <!--
-    Creates a text field that shows the value of the "name" property.
-    When submitted, it will be passed to the corresponding constructor parameter.
-  -->
   <f:entry title="Project token" field="token">
     <f:textbox />
   </f:entry>
+  <f:entry title="SonarQube project key" field="sqPK">
+      <f:textbox />
+      <f:description>
+        Place the SonarQube project key in this textbox if you use something different than the Maven groupId:artifactId, otherwise leave it empty.
+      </f:description>
+    </f:entry>
 </j:jelly>
