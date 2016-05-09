@@ -20,14 +20,12 @@ import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.JenkinsJsonObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.ServerJsonObject;
-import nl.devgames.jenkinsplugins.devgames_publisher.Models.sonarqube.SonarActivitiesJsonObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.sonarqube.SonarDuplicationsJsonObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.sonarqube.SonarIssuesJsonObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.sonarqube.deserializers.SonarDuplicationJsonObjectDeserializer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.interceptor.Interceptor;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -69,7 +67,11 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
             String baseURL              = build.getEnvironment(listener).get("JENKINS_URL");
             String POM_GROUPID          = build.getEnvironment(listener).get("POM_GROUPID");
             String POM_ARTIFACTID       = build.getEnvironment(listener).get("POM_ARTIFACTID");
-            String sonarQubeProjectKey  = POM_GROUPID + ":" + POM_ARTIFACTID;
+            String sonarQubeProjectKey;
+            if(sqPK == null || sqPK.equals(""))
+                sonarQubeProjectKey  = POM_GROUPID + ":" + POM_ARTIFACTID;
+            else
+                sonarQubeProjectKey = sqPK;
 
             GsonBuilder gsonBuilder     = new GsonBuilder()
                                                 .registerTypeAdapter(SonarDuplicationsJsonObject.class, new SonarDuplicationJsonObjectDeserializer());
@@ -98,9 +100,11 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 /*
                 Get the new issues from SonarQube
                 */
-                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                 String jenkinsBuildDate = dateFormatter.format(build.getTime());
                 String urlEncodedDate = URLEncoder.encode(jenkinsBuildDate,"UTF-8");
+
+                Thread.sleep(10000);
 
                 jsonResponse = Unirest.get("http://localhost:9000/api/issues/search?componentKeys=" + sonarQubeProjectKey + "&resolved=false&createdAfter=" + urlEncodedDate)
                         .basicAuth("admin","admin")
@@ -122,10 +126,8 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 SonarIssuesJsonObject fixedSonarIssuesJsonObject = gson.fromJson(json, SonarIssuesJsonObject.class);
 
                 List<SonarIssuesJsonObject.Issues> fixedIssues = new ArrayList<>();
-
-                SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                 for(SonarIssuesJsonObject.Issues issue : fixedSonarIssuesJsonObject.getIssues()){
-                    Date issueFixedDate = simpleDateFormatter.parse(issue.getCloseDate());
+                    Date issueFixedDate = dateFormatter.parse(issue.getCloseDate());
 
                     if (issueFixedDate.after(build.getTime())) {
                         fixedIssues.add(issue);
@@ -168,13 +170,13 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 Parse commits from the jenkins json object and convert them for the server json object
                  */
                 List<ServerJsonObject.Item> items = new ArrayList<>();
-                simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+                dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
                 for (JenkinsJsonObject.ChangeSet.Items item : jenkinsJsonObject.getChangeSet().getItems()) {
                     ServerJsonObject.Item newItem = serverJsonObject.new Item();
                     newItem.setCommitId(item.getCommitId());
                     newItem.setCommitMsg(item.getMsg());
 
-                    Date commitDate = simpleDateFormatter.parse(item.getDate());
+                    Date commitDate = dateFormatter.parse(item.getDate());
                     long timestamp = commitDate.getTime();
                     newItem.setTimestamp(timestamp);
                     items.add(newItem);
@@ -185,7 +187,7 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 Parse the issues from SonarQube
                  */
                 List<ServerJsonObject.Issue> issues = new ArrayList<>();
-                simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
                 // newly created issues
                 for (SonarIssuesJsonObject.Issues issue : newSonarIssuesJsonObject.getIssues()){
@@ -215,7 +217,7 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                     }
                     newIssue.setDebt(debt + "min");
 
-                    Date issueCreationDate = simpleDateFormatter.parse(issue.getCreationDate());
+                    Date issueCreationDate = dateFormatter.parse(issue.getCreationDate());
                     long issueCreationTimestamp = issueCreationDate.getTime();
                     newIssue.setCreationDate(issueCreationTimestamp);
                     issues.add(newIssue);
@@ -249,15 +251,15 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                     }
                     newIssue.setDebt(debt + "min");
 
-                    Date issueCreationDate = simpleDateFormatter.parse(issue.getCreationDate());
+                    Date issueCreationDate = dateFormatter.parse(issue.getCreationDate());
                     long issueCreationTimestamp = issueCreationDate.getTime();
                     newIssue.setCreationDate(issueCreationTimestamp);
 
-                    Date issueUpdateDate = simpleDateFormatter.parse(issue.getUpdateDate());
+                    Date issueUpdateDate = dateFormatter.parse(issue.getUpdateDate());
                     long issueUpdateTimestamp = issueUpdateDate.getTime();
                     newIssue.setCreationDate(issueUpdateTimestamp);
 
-                    Date issueCloseDate = simpleDateFormatter.parse(issue.getCloseDate());
+                    Date issueCloseDate = dateFormatter.parse(issue.getCloseDate());
                     long issueCloseTimestamp = issueCloseDate.getTime();
                     newIssue.setCreationDate(issueCloseTimestamp);
                     issues.add(newIssue);
@@ -314,7 +316,7 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
             }
         } catch (IOException | InterruptedException | NullPointerException | UnirestException | ParseException e) {
             build.setResult(Result.FAILURE);
-            listener.getLogger().println("ERROR: " + e.getStackTrace());
+            listener.getLogger().println("ERROR: " + e.getMessage());
         }
     }
 
