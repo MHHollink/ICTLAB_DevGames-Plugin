@@ -1,10 +1,12 @@
 package nl.devgames.jenkinsplugins.devgames_publisher.Models;
 
+import java.util.List;
+
 public class JenkinsJsonObject {
     private String result;
     private long timestamp;
     private ChangeSet changeSet;
-    private Culprits[] culprits;
+    private List<Culprits> culprits;
 
     public String getResult() {
         return result;
@@ -30,17 +32,17 @@ public class JenkinsJsonObject {
         this.changeSet = changeSet;
     }
 
-    public Culprits[] getCulprits() {
+    public List<Culprits> getCulprits() {
         return culprits;
     }
 
-    public void setCulprits(Culprits[] culprits) {
+    public void setCulprits(List<Culprits> culprits) {
         this.culprits = culprits;
     }
 
     public class ChangeSet {
         private String kind;
-        private Items[] items;
+        private List<Items> items;
 
         public String getKind() {
             return kind;
@@ -50,11 +52,11 @@ public class JenkinsJsonObject {
             this.kind = kind;
         }
 
-        public Items[] getItems() {
+        public List<Items> getItems() {
             return items;
         }
 
-        public void setItems(Items[] items) {
+        public void setItems(List<Items> items) {
             this.items = items;
         }
 

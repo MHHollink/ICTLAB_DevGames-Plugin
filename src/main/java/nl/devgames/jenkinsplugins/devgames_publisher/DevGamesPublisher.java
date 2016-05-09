@@ -53,12 +53,16 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
         return token;
     }
 
-    public String getSonarQubeProjectKey() {
+    public String getSqPK() {
         return sqPK;
     }
 
     @Override
     public void perform(Run<?,?> build, FilePath workspace, Launcher launcher, TaskListener listener) {
+
+        boolean DEBUG = false;
+        if(DEBUG)
+            return;
 
         try {
             String url                  = build.getUrl();
@@ -83,21 +87,20 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 String json = jsonResponse.getBody().toString();
                 JenkinsJsonObject jenkinsJsonObject = gson.fromJson(json, JenkinsJsonObject.class);
 
-                /*
-                Get the information about the last SonarQube analysis
-                */
-                jsonResponse = Unirest.get("http://localhost:9000/api/ce/activity?componentQuery=" + sonarQubeProjectKey + "&onlyCurrents=true")
-                        .basicAuth("admin","admin")
-                        .header("accept", "application/json")
-                        .asJson();
+                if (jenkinsJsonObject.getCulprits().size() == 0) {
+                    throw new IOException("Could not retrieve the author of the push");
+                }
 
-                json = jsonResponse.getBody().toString();
-                SonarActivitiesJsonObject sonarActivitiesJsonObject = gson.fromJson(json, SonarActivitiesJsonObject.class);
+                if (jenkinsJsonObject.getChangeSet().getItems().size() == 0) {
+                    throw new IOException("Coul not find new changes");
+                }
 
                 /*
                 Get the new issues from SonarQube
                 */
-                String urlEncodedDate = URLEncoder.encode(sonarActivitiesJsonObject.getTasks().get(0).getStartedAt(),"UTF-8");
+                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                String jenkinsBuildDate = dateFormatter.format(build.getTime());
+                String urlEncodedDate = URLEncoder.encode(jenkinsBuildDate,"UTF-8");
 
                 jsonResponse = Unirest.get("http://localhost:9000/api/issues/search?componentKeys=" + sonarQubeProjectKey + "&resolved=false&createdAfter=" + urlEncodedDate)
                         .basicAuth("admin","admin")
@@ -121,13 +124,10 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 List<SonarIssuesJsonObject.Issues> fixedIssues = new ArrayList<>();
 
                 SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                String analysisDateString = sonarActivitiesJsonObject.getTasks().get(0).getStartedAt();
-                Date analysisDate = simpleDateFormatter.parse(analysisDateString);
-
                 for(SonarIssuesJsonObject.Issues issue : fixedSonarIssuesJsonObject.getIssues()){
                     Date issueFixedDate = simpleDateFormatter.parse(issue.getCloseDate());
 
-                    if (issueFixedDate.after(analysisDate)) {
+                    if (issueFixedDate.after(build.getTime())) {
                         fixedIssues.add(issue);
                     } else {
                         break;
@@ -162,7 +162,7 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 ServerJsonObject serverJsonObject = new ServerJsonObject();
                 serverJsonObject.setResult(build.getResult().toString());
                 serverJsonObject.setTimestamp(new Date().getTime());
-                serverJsonObject.setAuthor(jenkinsJsonObject.getCulprits()[0].getFullName());
+                serverJsonObject.setAuthor(jenkinsJsonObject.getCulprits().get(0).getFullName());
 
                 /*
                 Parse commits from the jenkins json object and convert them for the server json object
@@ -314,7 +314,7 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
             }
         } catch (IOException | InterruptedException | NullPointerException | UnirestException | ParseException e) {
             build.setResult(Result.FAILURE);
-            listener.getLogger().println("ERROR: " + e.getMessage());
+            listener.getLogger().println("ERROR: " + e.getStackTrace());
         }
     }
 
