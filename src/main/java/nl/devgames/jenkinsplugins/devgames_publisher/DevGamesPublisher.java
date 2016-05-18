@@ -113,7 +113,7 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
 
                 Thread.sleep(10000);
 
-                jsonResponse = Unirest.get("http://localhost:9000/api/issues/search?componentKeys=" + sonarQubeProjectKey + "&resolved=false&createdAfter=" + urlEncodedDate)
+                jsonResponse = Unirest.get("http://localhost:9000/api/issues/search?componentKeys=" + sonarQubeProjectKey + "&resolved=false&createdAfter=" + urlEncodedDate + "&ps=500")
                         .basicAuth("admin","admin")
                         .header("accept", "application/json")
                         .asJson();
@@ -171,7 +171,8 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 ServerJsonObject serverJsonObject = new ServerJsonObject();
                 serverJsonObject.setResult(build.getResult().toString());
                 serverJsonObject.setTimestamp(new Date().getTime());
-                serverJsonObject.setAuthor(jenkinsJsonObject.getCulprits().get(0).getFullName());
+                String[] authorUrlParts = jenkinsJsonObject.getCulprits().get(0).getAbsoluteUrl().split("/");
+                serverJsonObject.setAuthor(authorUrlParts[authorUrlParts.length-1]);
 
                 /*
                 Parse commits from the jenkins json object and convert them for the server json object
@@ -201,8 +202,12 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                     ServerJsonObject.Issue newIssue = serverJsonObject.new Issue();
                     newIssue.setSeverity(issue.getSeverity());
                     newIssue.setComponent(issue.getComponent());
-                    newIssue.setStartLine(issue.getTextRange().getStartLine());
-                    newIssue.setEndLine(issue.getTextRange().getEndLine());
+
+                    if (issue.getTextRange() != null) {
+                        newIssue.setStartLine(issue.getTextRange().getStartLine());
+                        newIssue.setEndLine(issue.getTextRange().getEndLine());
+                    }
+
                     newIssue.setStatus(issue.getStatus());
                     newIssue.setResolution(issue.getResolution());
                     newIssue.setMessage(issue.getMessage());
@@ -235,8 +240,12 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                     ServerJsonObject.Issue newIssue = serverJsonObject.new Issue();
                     newIssue.setSeverity(issue.getSeverity());
                     newIssue.setComponent(issue.getComponent());
-                    newIssue.setStartLine(issue.getTextRange().getStartLine());
-                    newIssue.setEndLine(issue.getTextRange().getEndLine());
+
+                    if (issue.getTextRange() != null) {
+                        newIssue.setStartLine(issue.getTextRange().getStartLine());
+                        newIssue.setEndLine(issue.getTextRange().getEndLine());
+                    }
+
                     newIssue.setStatus(issue.getStatus());
                     newIssue.setResolution(issue.getResolution());
                     newIssue.setMessage(issue.getMessage());

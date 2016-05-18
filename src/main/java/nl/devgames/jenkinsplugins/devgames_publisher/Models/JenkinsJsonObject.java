@@ -93,6 +93,7 @@ public class JenkinsJsonObject {
 
     public class Culprits {
         private String fullName;
+        private String absoluteUrl;
 
         public String getFullName() {
             return fullName;
@@ -100,6 +101,14 @@ public class JenkinsJsonObject {
 
         public void setFullName(String fullName) {
             this.fullName = fullName;
+        }
+
+        public String getAbsoluteUrl() {
+            return absoluteUrl;
+        }
+
+        public void setAbsoluteUrl(String absoluteUrl) {
+            this.absoluteUrl = absoluteUrl;
         }
     }
 }
