@@ -5,6 +5,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.HttpRequest;
+import com.mashape.unirest.request.body.RequestBodyEntity;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -23,6 +25,7 @@ import nl.devgames.jenkinsplugins.devgames_publisher.Models.ServerJsonObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.sonarqube.SonarDuplicationsJsonObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.sonarqube.SonarIssuesJsonObject;
 import nl.devgames.jenkinsplugins.devgames_publisher.Models.sonarqube.deserializers.SonarDuplicationJsonObjectDeserializer;
+import org.acegisecurity.acls.NotFoundException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -72,6 +75,10 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 sonarQubeProjectKey  = POM_GROUPID + ":" + POM_ARTIFACTID;
             else
                 sonarQubeProjectKey = sqPK;
+
+            if (token == null || token.equals("")) {
+                throw new NotFoundException("Token not found");
+            }
 
             GsonBuilder gsonBuilder     = new GsonBuilder()
                                                 .registerTypeAdapter(SonarDuplicationsJsonObject.class, new SonarDuplicationJsonObjectDeserializer());
@@ -311,10 +318,24 @@ public class DevGamesPublisher extends Publisher implements SimpleBuildStep {
                 listener.getLogger().println();
                 listener.getLogger().println();
 
+                try {
+                    RequestBodyEntity httpRequest = Unirest.post("http://localhost:8090/projects/{token}/build")
+                            .routeParam("token", token)
+                            .body(returnJson);
+                    HttpResponse<String> httpRequestJsonResponse = httpRequest.asString();
+
+                    if (httpRequestJsonResponse.getStatus() != 200) {
+                        throw new UnirestException("Could not submit the report to the server.");
+                    }
+                    jsonResponse.getStatus();
+                } catch (UnirestException e) {
+                    build.setResult(Result.FAILURE);
+                    listener.getLogger().println("ERROR: " + e.getMessage());
+                }
             } else {
                 throw new NullPointerException("Jenkins base url could not be found");
             }
-        } catch (IOException | InterruptedException | NullPointerException | UnirestException | ParseException e) {
+        } catch (IOException | InterruptedException | NullPointerException | UnirestException | ParseException | NotFoundException e) {
             build.setResult(Result.FAILURE);
             listener.getLogger().println("ERROR: " + e.getMessage());
         }
