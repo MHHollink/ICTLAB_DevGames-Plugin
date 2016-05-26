@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Group-Id: nl.devgames.jenkinsplugins
+Short-Name: devgames-publisher
+Long-Name: DevGames plugin
+Plugin-Version: 2016.mei.24.16.57.27
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: git:2.4.4,maven-plugin:2.12.1,sonar:2.3
+Plugin-Developers: 
+Libraries: E:\Documenten\Git Repositories\DevGames-Plugin\src\main\res
+ ources,E:\Documenten\Git Repositories\DevGames-Plugin\target\classes,
+ C:\Users\evert\.m2\repository\org\apache\httpcomponents\httpclient\4.
+ 5.2\httpclient-4.5.2.jar,C:\Users\evert\.m2\repository\org\apache\htt
+ pcomponents\httpmime\4.5.2\httpmime-4.5.2.jar,C:\Users\evert\.m2\repo
+ sitory\org\apache\httpcomponents\httpcore-nio\4.4.4\httpcore-nio-4.4.
+ 4.jar,C:\Users\evert\.m2\repository\com\mashape\unirest\unirest-java\
+ 1.4.9\unirest-java-1.4.9.jar,C:\Users\evert\.m2\repository\org\apache
+ \httpcomponents\httpasyncclient\4.1.1\httpasyncclient-4.1.1.jar,C:\Us
+ ers\evert\.m2\repository\com\google\code\gson\gson\2.6.2\gson-2.6.2.j
+ ar,C:\Users\evert\.m2\repository\org\json\json\20160212\json-20160212
+ .jar,C:\Users\evert\.m2\repository\commons-codec\commons-codec\1.8\co
+ mmons-codec-1.8.jar
+Resource-Path: E:\Documenten\Git Repositories\DevGames-Plugin\src\main
+ \webapp
+

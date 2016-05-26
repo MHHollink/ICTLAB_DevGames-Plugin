@@ -5,13 +5,13 @@
 
     See global.jelly for a general discussion about jelly script.
   -->
-  <f:entry title="Project token" field="token">
-    <f:textbox />
-  </f:entry>
-  <f:entry title="SonarQube project key" field="sqPK">
+    <f:entry title="Project token" field="TOKEN">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="SonarQube project key" field="SONARQUBE_PROJECT_KEY">
       <f:textbox />
       <f:description>
-        Place the SonarQube project key in this textbox if you use something different than the Maven groupId:artifactId, otherwise leave it empty.
+        Fill in the key that belongs to this project in SonarQube
       </f:description>
     </f:entry>
 </j:jelly>

@@ -1,23 +1,14 @@
-package nl.devgames.jenkinsplugins.devgames_publisher.Models;
+package nl.devgames.jenkinsplugins.devgames_publisher.models;
 
 import java.util.List;
 
 public class ServerJsonObject {
-    private String projectName;
     private String result;
     private long timestamp;
     private String author;
     private List<Item> items;
     private List<Issue> issues;
     private List<Duplication> duplications;
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
 
     public String getResult() {
         return result;
@@ -98,6 +89,7 @@ public class ServerJsonObject {
     }
 
     public class Issue {
+        private String key;
         private String severity;
         private String component;
         private int startLine;
@@ -105,10 +97,18 @@ public class ServerJsonObject {
         private String status;
         private String resolution;
         private String message;
-        private String debt;
-        private long creationDate;
-        private long updateDate;
-        private long closeDate;
+        private int debt;
+        private Long creationDate;
+        private Long updateDate;
+        private Long closeDate;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
 
         public String getSeverity() {
             return severity;
@@ -166,35 +166,35 @@ public class ServerJsonObject {
             this.message = message;
         }
 
-        public String getDebt() {
+        public int getDebt() {
             return debt;
         }
 
-        public void setDebt(String debt) {
+        public void setDebt(int debt) {
             this.debt = debt;
         }
 
-        public long getCreationDate() {
+        public Long getCreationDate() {
             return creationDate;
         }
 
-        public void setCreationDate(long creationDate) {
+        public void setCreationDate(Long creationDate) {
             this.creationDate = creationDate;
         }
 
-        public long getUpdateDate() {
+        public Long getUpdateDate() {
             return updateDate;
         }
 
-        public void setUpdateDate(long updateDate) {
+        public void setUpdateDate(Long updateDate) {
             this.updateDate = updateDate;
         }
 
-        public long getCloseDate() {
+        public Long getCloseDate() {
             return closeDate;
         }
 
-        public void setCloseDate(long closeDate) {
+        public void setCloseDate(Long closeDate) {
             this.closeDate = closeDate;
         }
     }
