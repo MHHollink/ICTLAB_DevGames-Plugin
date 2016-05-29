@@ -10,6 +10,9 @@ import nl.devgames.jenkinsplugins.devgames_publisher.helpers.Tuple;
 
 import java.util.Map;
 
+/**
+ * Helper class which handles getting and posting JSON from/to an URL.
+ */
 public class URLRequester {
 
     private URLRequester() {

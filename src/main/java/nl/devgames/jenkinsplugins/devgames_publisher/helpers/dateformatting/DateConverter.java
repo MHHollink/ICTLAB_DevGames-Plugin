@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Helper class for converting strings to dates and dates to strings
+ */
 public class DateConverter {
     public static final String JENKINS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss Z";
     public static final String SONARQUBE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";

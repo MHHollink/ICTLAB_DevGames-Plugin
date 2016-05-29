@@ -12,11 +12,12 @@
   <groupId>nl.devgames.jenkinsplugins</groupId>
   <artifactId>devgames-publisher</artifactId>
   <packaging>hpi</packaging>
-  <version>${buildNumber}</version>
+  <!--<version>${buildNumber}</version>-->
+  <version>1.0.0-SNAPSHOT</version>
 
   <properties>
-    <maven.build.timestamp.format>yyyy.MMM.dd.HH.mm.ss</maven.build.timestamp.format>
-    <buildNumber>${maven.build.timestamp}</buildNumber>
+    <!--<maven.build.timestamp.format>yyyy.MMM.dd.HH.mm.ss</maven.build.timestamp.format>-->
+    <!--<buildNumber>${maven.build.timestamp}</buildNumber>-->
 
     <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
     <jenkins.version>1.625.3</jenkins.version>
@@ -90,5 +91,20 @@
     </dependency>
   </dependencies>
   -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <configuration>
+          <signature>
+            <groupId>org.codehaus.mojo.signature</groupId>
+            <artifactId>java18</artifactId>
+            <version>1.0</version>
+          </signature>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
