@@ -1,0 +1,33 @@
+{
+  duplications : [{
+    blocks : [{
+      from : 119,
+      size : 10,
+      _ref : "1"
+    }, {
+      from : 221,
+      size : 11,
+      _ref : "2"
+    }
+    ]
+  }
+  ],
+  files : {
+    1 : {
+      key : "HROMMORPG:src/nl/evertjanheilema/Main.java",
+      uuid : "AVL0rhbOkEkqXN-NbtFQ",
+      name : "src/nl/evertjanheilema/Main.java",
+      project : "HROMMORPG",
+      projectUuid : "AVL0rg2CkEkqXN-NbtE9",
+      projectName : "HRO MMORPG"
+    },
+    2 : {
+      key : "HROMMORPG:src/nl/evertjanheilema/Controllers/MainScreenController.java",
+      uuid : "AVL0rhbJkEkqXN-NbtFG",
+      name : "src/nl/evertjanheilema/Controllers/MainScreenController.java",
+      project : "HROMMORPG",
+      projectUuid : "AVL0rg2CkEkqXN-NbtE9",
+      projectName : "HRO MMORPG"
+    }
+  }
+}

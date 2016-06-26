@@ -3,10 +3,10 @@ package nl.devgames.jenkinsplugins.devgames_publisher.models.sonarqube;
 import java.util.Date;
 import java.util.List;
 
-public class SonarIssuesObject {
+public class SonarIssues {
     private Integer total;
-    private Integer page;
-    private Integer pageSize;
+    private Integer p;
+    private Integer ps;
     private List<Issue> issues;
 
     public Integer getTotal() {
@@ -17,20 +17,24 @@ public class SonarIssuesObject {
         this.total = total;
     }
 
-    public Integer getPage() {
-        return page;
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public Integer getP() {
+        return p;
     }
 
-    public Integer getPageSize() {
-        return pageSize;
+    public void setP(Integer p) {
+        this.p = p;
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public Integer getPs() {
+        return ps;
+    }
+
+    public void setPs(Integer ps) {
+        this.ps = ps;
     }
 
     public List<Issue> getIssues() {
@@ -54,9 +58,9 @@ public class SonarIssuesObject {
         private String debt;
         private String author;
         private List<String> tags;
-        private Date creationDate;
-        private Date updateDate;
-        private Date closeDate;
+        private String creationDate;
+        private String updateDate;
+        private String closeDate;
 
         public String getKey() {
             return key;
@@ -154,27 +158,27 @@ public class SonarIssuesObject {
             this.tags = tags;
         }
 
-        public Date getCreationDate() {
+        public String getCreationDate() {
             return creationDate;
         }
 
-        public void setCreationDate(Date creationDate) {
+        public void setCreationDate(String creationDate) {
             this.creationDate = creationDate;
         }
 
-        public Date getUpdateDate() {
+        public String getUpdateDate() {
             return updateDate;
         }
 
-        public void setUpdateDate(Date updateDate) {
+        public void setUpdateDate(String updateDate) {
             this.updateDate = updateDate;
         }
 
-        public Date getCloseDate() {
+        public String getCloseDate() {
             return closeDate;
         }
 
-        public void setCloseDate(Date closeDate) {
+        public void setCloseDate(String closeDate) {
             this.closeDate = closeDate;
         }
 

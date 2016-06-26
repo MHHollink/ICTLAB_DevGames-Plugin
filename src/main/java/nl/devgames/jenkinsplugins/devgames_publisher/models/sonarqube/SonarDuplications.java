@@ -2,7 +2,7 @@ package nl.devgames.jenkinsplugins.devgames_publisher.models.sonarqube;
 
 import java.util.List;
 
-public class SonarDuplicationsObject {
+public class SonarDuplications {
     private List<Duplication> duplications;
     private List<File> files;
 

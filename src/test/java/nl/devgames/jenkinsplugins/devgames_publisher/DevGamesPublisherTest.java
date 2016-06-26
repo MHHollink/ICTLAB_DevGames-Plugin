@@ -20,22 +20,18 @@ public class DevGamesPublisherTest {
     public JenkinsRule j = new JenkinsRule();
 
     @Test
-    public void first() throws Exception {
+    public void testDevGamesPublisherIsApplicableForMavenProject() throws Exception {
         MavenModuleSet project = j.jenkins.createProject(MavenModuleSet.class, "p");
         DevGamesPublisher devGamesPublisher = new DevGamesPublisher("","");
-//        SonarRunnerBuilder sonarRunnerBuilder = new SonarRunnerBuilder()
 
         assertTrue(devGamesPublisher.getDescriptor().isApplicable(project.getClass()));
     }
 
+    @Test
+    public void testDevGamesPublisherIsNotApplicableForFreestyleProject() throws Exception {
+        FreeStyleProject project = j.createFreeStyleProject("freestyle project");
+        DevGamesPublisher devGamesPublisher = new DevGamesPublisher("","");
 
-/*    @Test public void first() throws Exception {
-        FreeStyleProject project = j.createFreeStyleProject();
-        project.getBuildersList().add(new Shell("echo hello"));
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        System.out.println(build.getDisplayName() + " completed");
-        // TODO: change this to use HtmlUnit
-        String s = FileUtils.readFileToString(build.getLogFile());
-        assertThat(s, contains("+ echo hello"));
-    }*/
+        assertFalse(devGamesPublisher.getDescriptor().isApplicable(project.getClass()));
+    }
 }

@@ -1,9 +1,8 @@
 package nl.devgames.jenkinsplugins.devgames_publisher.models;
 
-import java.util.Date;
 import java.util.List;
 
-public class JenkinsObject {
+public class JenkinsAPIData {
     private String result;
     private ChangeSet changeSet;
 
@@ -46,7 +45,7 @@ public class JenkinsObject {
         public class Item {
             private String commitId;
             private Author author;
-            private Date date;
+            private String date;
             private String msg;
 
             public String getCommitId() {
@@ -65,11 +64,11 @@ public class JenkinsObject {
                 this.author = author;
             }
 
-            public Date getDate() {
+            public String getDate() {
                 return date;
             }
 
-            public void setDate(Date date) {
+            public void setDate(String date) {
                 this.date = date;
             }
 
@@ -82,15 +81,15 @@ public class JenkinsObject {
             }
 
             public class Author {
-                private String scmUser;
+                private String absoluteUrl;
                 private String fullName;
 
-                public String getScmUser() {
-                    return scmUser;
+                public String getAbsoluteUrl() {
+                    return absoluteUrl;
                 }
 
-                public void setScmUser(String scmUser) {
-                    this.scmUser = scmUser;
+                public void setAbsoluteUrl(String absoluteUrl) {
+                    this.absoluteUrl = absoluteUrl;
                 }
 
                 public String getFullName() {
